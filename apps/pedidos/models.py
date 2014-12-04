@@ -149,8 +149,8 @@ class Enterprise(models.Model):
     is_active = models.BooleanField(capfirst(_('active')), default=True)
     is_actived = models.BooleanField(_('Actived'), default=False)
 
-    created_at = models.DateTimeField(_('Created at'), auto_now_add=True)
-    updated_at = models.DateTimeField(_('Updated at'), auto_now=True)
+    created_at = models.DateTimeField(_('Created at'), auto_now_add=True) #cuando se crea
+    updated_at = models.DateTimeField(_('Updated at'), auto_now=True) #cuando actualizs
 
     solution = models.ForeignKey(
         Solution, verbose_name=_('Solution'), null=True, blank=True)
