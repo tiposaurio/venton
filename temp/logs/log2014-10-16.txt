@@ -1,0 +1,1 @@
+[2014-10-16 15:49:51] [WARNING] [apps.space.views:815] [/space/solution/create/] [127.0.0.1] [admin] Se añadió con éxito el Solution "prueba".

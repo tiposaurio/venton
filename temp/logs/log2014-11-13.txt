@@ -1,0 +1,1 @@
+[2014-11-13 16:19:12] [WARNING] [apps.accounts.views:448] [/accounts/register/] [127.0.0.1] [AnonymousUser] Se añadió con éxito el Usuario "deyvis".
