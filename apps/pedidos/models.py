@@ -29,11 +29,33 @@ GOVERMENT = 'GOVERMENT'
 PRIVATE = 'PRIVATE'
 MIXED = 'MIXED'
 OTHERS = 'OTHERS'
-TYPE_CHOICES = (
+TYPE_CHOICES = (     # enumerators
     (GOVERMENT, _('Government')),
     (PRIVATE, _('Private')),
     (MIXED, _('Mixed')),
     (OTHERS, _('Others'))
+)
+
+#forma_entrega
+PRESENCIAL = 'PRESENCIAL'
+DELIVERY = 'DELIVERY'
+FORMA_ENTREGA_CHOICES = (
+    (PRESENCIAL, _('Presencial')),
+    (DELIVERY, _('Delivery'))
+)
+#tipo de pago
+DEPOSITO = 'DEPOSITO'
+TIPO_PAGO_CHOICES = (
+    (DEPOSITO, _('Deposito'))
+)
+#estado de producto
+NUEVO ='NUEVO'
+EN_ATENCION = 'EN_ATENCION'
+ATENDIDO = 'ATENDIDO'
+ESTADO_CHOICES = (
+    (NUEVO, _('Nuevo')),
+    (EN_ATENCION, _('En_atencion')),
+    (ATENDIDO, _('Atendido'))
 )
 
 
@@ -61,7 +83,8 @@ class Solution(models.Model):
     test_date = models.DateTimeField(_('Test date'),
                                      null=True, blank=True)
 
-    class Meta:
+    
+     Meta:
         verbose_name = _('Solution')
         verbose_name_plural = _('Solutions')
         permissions = (
@@ -107,6 +130,7 @@ class Association(models.Model):
     created_at = models.DateTimeField(_('Created at'), auto_now_add=True)
     updated_at = models.DateTimeField(_('Updated at'), auto_now=True)
 
+    
     solution = models.ForeignKey(
         Solution, verbose_name=_('Solution'), null=True, blank=True)
 
@@ -229,3 +253,96 @@ class Headquar(models.Model):
                 'field_label': capfirst(_(u'name')),
             })
         super(Headquar, self).save(*args, **kwargs)
+
+#==============================clases venton===================================aqui
+
+class Pedido(models.Model):
+
+    """
+    Tabla que contiene los pedidos de los clientes, asociadas a una empresa y
+    Una Headquar, sede o sucursal, es la unidad principal del sistema
+    """
+    nro_pedido = models.IntegerField(capfirst(_('Nro pedido')), max_length=20)
+    #-----------------
+    fecha_atencion = models.DateTimeField(_('Fecha atencion'), auto_now_add=True)
+    empresa = models.CharField(_('Empresa'), max_length=50, null=True, blank=True) #forenignkey?
+    recibido_por = models.CharField(_('Recibido por'), max_length=50, null=True, blank=True)
+
+    total = models.FloatField(capfirst(_('Total')), max_length=12)
+    igv = models.FloatField(capfirst(_('Igv')), max_length=12)
+    cliente = models.CharField(_('Cliente'), max_length=50, null=True, blank=True) #forenignkey?
+    cantidad = models.IntegerField(capfirst(_('Cantidad')), max_length=12) 
+    de_lugar = models.CharField(capfirst(_('De lugar')), max_length=12)
+    de_fecha = models.DateTimeField(capfirst(_('De fecha')), auto_now=True)
+
+    cliente = models.ForeignKey(
+        Cliente, verbose_name=_('Cliente'), null=True, blank=True)
+
+    pedidodetalle = models.ForeignKey(
+        PedidoDetalle, verbose_name=_('PedidoDetalle'), null=True, blank=True)
+
+    headquar = models.ForeignKey(
+        Headquar, verbose_name=_('Headquar'), null=True, blank=True)
+    
+
+class Cliente(models.Model):
+
+    """
+    Tabla que contiene la gestion de los clientes, asociadas a un pais y
+    Una Headquar, sede o sucursal, es la unidad principal del sistema
+    """
+    
+    email = models.CharField(_('Email'), auto_now_add=True)
+    
+    
+class PedidoDetalle(models.Model):
+
+   """
+    Tabla que contiene los detalles del pedido
+   """
+    
+   # producto = models.CharField(capfirst(_('Producto')), max_length=50) # forenkey ????
+    cantidad = models.IntegerField(capfirst(_('Cantidad')), max_length=12)
+    precio = models.FloatField(capfirst(_('Precio')), max_length=12)
+    descripcion = models.CharField(capfirst(_('Descripcion')), max_length=80)
+    igv = models.FloatField(capfirst(_('Igv')), max_length=12)
+    sub_igv = models.FloatField(capfirst(_('Sub igv')), max_length=50)
+    sub_total = models.FloatField(capfirst(_('Sub total')), max_length=50)
+
+    producto = models.ForeignKey(
+        Producto, verbose_name=_('Producto'), null=True, blank=True)
+
+    pedido = models.ForeignKey(
+        Pedido, verbose_name=_('Pedido'), null=True, blank=True)
+
+class Producto(models.Model):
+
+   """
+    Tabla que contiene los productos suscritas a una empresa
+   """
+    nombre = models.CharField(capfirst(_('Producto')), max_length=50)
+    codigo = models.IntegerField(capfirst(_('Codigo')), max_length=12)
+    stock = models.IntegerField(capfirst(_('Staok')), max_length=12)
+    descripcion = models.CharField(capfirst(_('Descripcion')), max_length=80)
+    precio = models.FloatField(capfirst(_('Precio')), max_length=12)
+    igv = models.FloatField(capfirst(_('Igv')), max_length=12)
+    imagen_pequeño = models.ImageField(capfirst(_('Imagen pequño')))
+    imagen_grande = models.ImageField(capfirst(_('Imagen grande')))
+    color = models.CharField(capfirst(_('Color')), max_length=30)
+    talla = models.CharField(capfirst(_('Talla')), max_length=10)
+
+    categoria = models.ForeignKey(
+        Categoria, verbose_name=_('Categoria'), null=True, blank=True)
+
+    def __str__(self):
+        return self.nombre
+        
+class Categoria(models.Model):
+
+    """
+    Tabla que contiene las categorias de un producto 
+    """
+    codigo = models.IntegerField(capfirst(_('Codigo')), max_length=12)
+    nombre = models.CharField(capfirst(_('Nombre')), max_length=50)
+
+ 
